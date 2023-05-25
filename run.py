@@ -1,16 +1,17 @@
 from Window import Window
 from Board import Board
-from Player import Player
+from agent import agent
 from QLearner import QLearner
 import pygame
 import time
+import sys
 
 pygame.init()
 w = Window()
-p = Player()
+a = agent()
 b = Board()
 b.createPenaltyCells()
-w.drawSurface(b, p)
+w.drawSurface(b, a)
 
 while True:
     for event in pygame.event.get():
@@ -23,17 +24,21 @@ while True:
     dirToGo = {}
     for k, v in qTable.items():
         dirToGo[k] = max(v, key=v.get)
-        print("k: {}, v: {}".format(k,v))
+        print("k: {}, v: {}".format(k, v))
     #
     # print("____________________________________-")
     # for k, v in dirToGo.items():
     #     print("k: {}, v: {}".format(k,v))
 
-    currNode = (p.getCurrCoords())
+    currNode = (a.getCurrCoords())
 
-    while(not b.isTerminalCell(currNode)):
-        p.move(dirToGo[currNode])
-        currNode = p.getCurrCoords()
+    while (not b.isTerminalCell(currNode)):
+        a.move(dirToGo[currNode])
+        currNode = a.getCurrCoords()
         # print(currNode)
         w.colorCell(currNode, (0, 0, 255))
         pygame.display.update()
+
+    if (b.isTerminalCell(currNode)):
+        time.sleep(20)
+        sys.exit()
